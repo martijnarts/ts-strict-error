@@ -1,13 +1,13 @@
 import { match } from "ts-pattern";
-import { None, TsError, createTsError, isTsError } from "../lib";
+import { None, StrictError, createStrictError, isStrictError } from "../lib";
 
 test("pattern matching errors works", () => {
-  const Err = createTsError<"foo" | "bar">("foo");
+  const Err = createStrictError<"foo" | "bar">("foo");
 
   match(new Err({}))
     .with({ name: "foo" }, (err) => {
-      expect(err).toBeInstanceOf(TsError);
-      expect(isTsError(err)).toBe(true);
+      expect(err).toBeInstanceOf(StrictError);
+      expect(isStrictError(err)).toBe(true);
     })
     .with({ name: "bar" }, () => {
       throw new Error("should not match");
@@ -16,23 +16,25 @@ test("pattern matching errors works", () => {
 });
 
 test("nested pattern matching errors works", () => {
-  const ChildErr = createTsError("child");
-  const Err = createTsError<"parent", InstanceType<typeof ChildErr>>("parent");
+  const ChildErr = createStrictError("child");
+  const Err = createStrictError<"parent", InstanceType<typeof ChildErr>>(
+    "parent"
+  );
 
   match(new Err({ from: new ChildErr({}) }))
     .with({ name: "parent", cause: { name: "child" } }, (err) => {
-      expect(err).toBeInstanceOf(TsError);
-      expect(isTsError(err)).toBe(true);
+      expect(err).toBeInstanceOf(StrictError);
+      expect(isStrictError(err)).toBe(true);
     })
     .exhaustive();
 });
 
 test("union typed error causes works", () => {
-  const ChildErrA = createTsError("childA");
-  const ChildErrB = createTsError("childB");
-  const ChildErrC = createTsError("childC");
+  const ChildErrA = createStrictError("childA");
+  const ChildErrB = createStrictError("childB");
+  const ChildErrC = createStrictError("childC");
 
-  const Err = createTsError<
+  const Err = createStrictError<
     "parent",
     | InstanceType<typeof ChildErrA>
     | InstanceType<typeof ChildErrB>
@@ -41,8 +43,8 @@ test("union typed error causes works", () => {
 
   match(new Err({ from: new ChildErrA({}) }))
     .with({ name: "parent", cause: { name: "childA" } }, (err) => {
-      expect(err).toBeInstanceOf(TsError);
-      expect(isTsError(err)).toBe(true);
+      expect(err).toBeInstanceOf(StrictError);
+      expect(isStrictError(err)).toBe(true);
     })
     .with({ name: "parent", cause: { name: "childB" } }, () => {
       throw new Error("should not match");
@@ -54,15 +56,15 @@ test("union typed error causes works", () => {
 });
 
 test("context works", () => {
-  const Err = createTsError<"foo", None, { foo: string }>("foo");
+  const Err = createStrictError<"foo", None, { foo: string }>("foo");
 
   const err = new Err({ context: { foo: "bar" } });
   expect(err.context.foo).toBe("bar");
 });
 
 test("context works with cause", () => {
-  const ChildErr = createTsError<"child", None, { foo: string }>("child");
-  const Err = createTsError<
+  const ChildErr = createStrictError<"child", None, { foo: string }>("child");
+  const Err = createStrictError<
     "parent",
     InstanceType<typeof ChildErr>,
     { bar: string }

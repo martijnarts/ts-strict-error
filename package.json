@@ -1,5 +1,5 @@
 {
-  "name": "ts-error",
+  "name": "ts-strict-error",
   "version": "1.0.0",
   "description": "Descriptive and unpackable errors for easier error handling",
   "main": "dist/index.js",
@@ -18,7 +18,7 @@
   "author": "Martijn Arts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martijnarts/ts-error.git"
+    "url": "git+https://github.com/martijnarts/ts-strict-error.git"
   },
   "license": "MIT",
   "dependencies": {

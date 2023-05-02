@@ -1,22 +1,22 @@
-# ts-error
+# ts-strict-error
 
-ts-error is an extremely simple little library that provides some nice ergonomics for creating errors in Typescript that you can [ts-pattern][ts-pattern] against.
+ts-strict-error is an extremely simple little library that provides some nice ergonomics for creating errors in Typescript that you can [ts-pattern][ts-pattern] against.
 
 [ts-pattern]: https://github.com/gvergnaud/ts-pattern
 
 ## Usage
 
 ```ts
-import { createError, None } from "ts-error";
+import { createError, None } from "ts-strict-error";
 
-const NetworkError = createTsError("NetworkError");
-const NonOkStatusCode = createTsError<
+const NetworkError = createStrictError("NetworkError");
+const NonOkStatusCode = createStrictError<
   "NonOkStatusCode",
   None,
   { code: number }
 >("NonOkStatusCode");
 
-const FetchError = createTsError<
+const FetchError = createStrictError<
   "Fetch",
   InstanceType<typeof NetworkError> | InstanceType<typeof NonOkStatusCode>
 >("Fetch");
