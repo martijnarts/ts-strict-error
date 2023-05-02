@@ -16,7 +16,11 @@
     "typescript"
   ],
   "author": "Martijn Arts",
-  "license": "EUPL-1.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martijnarts/ts-error.git"
+  },
+  "license": "MIT",
   "dependencies": {
     "ts-custom-error": "^3.3.1",
     "ts-pattern": "^4.2.2"
