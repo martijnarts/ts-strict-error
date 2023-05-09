@@ -1,5 +1,7 @@
 # ts-strict-error
 
+![NPM badge](https://img.shields.io/npm/v/ts-strict-error)
+
 ts-strict-error is an extremely simple little library that provides some nice ergonomics for creating errors in Typescript that you can [ts-pattern][ts-pattern] against.
 
 [ts-pattern]: https://github.com/gvergnaud/ts-pattern
