@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import { None, StrictError, createStrictError, isStrictError } from "../lib";
+import { StrictError, createStrictError, isStrictError } from "../lib";
 
 test("pattern matching errors works", () => {
   const Err = createStrictError<"foo" | "bar">("foo");
@@ -56,14 +56,16 @@ test("union typed error causes works", () => {
 });
 
 test("context works", () => {
-  const Err = createStrictError<"foo", None, { foo: string }>("foo");
+  const Err = createStrictError<"foo", undefined, { foo: string }>("foo");
 
   const err = new Err({ context: { foo: "bar" } });
   expect(err.context.foo).toBe("bar");
 });
 
 test("context works with cause", () => {
-  const ChildErr = createStrictError<"child", None, { foo: string }>("child");
+  const ChildErr = createStrictError<"child", undefined, { foo: string }>(
+    "child"
+  );
   const Err = createStrictError<
     "parent",
     InstanceType<typeof ChildErr>,
@@ -76,4 +78,9 @@ test("context works with cause", () => {
   });
   expect(err.context.bar).toBe("baz");
   expect(err.cause.context.foo).toBe("bar");
+});
+
+test("the class name is correct", () => {
+  const Err = createStrictError("foo");
+  expect(Err.name).toBe("foo");
 });

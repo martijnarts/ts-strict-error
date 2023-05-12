@@ -2,13 +2,10 @@ import { CustomError } from "ts-custom-error";
 
 const TS_STRICT_ERROR_IDENT = Symbol("TS_STRICT_ERROR_IDENTIFIER");
 
-type None = symbol & { __type: "none" };
-const isNotNone = <T>(value: T | None): value is T => true;
-
 abstract class StrictError<
   const Type extends string,
-  const Cause extends Error | None = None,
-  const Context = None
+  const Cause extends Error | undefined = undefined,
+  const Context = undefined
 > extends CustomError {
   abstract readonly name: Type;
 
@@ -17,27 +14,25 @@ abstract class StrictError<
   readonly context: Context;
 
   constructor(
-    readonly innerMessage: string,
-    readonly options: (Cause extends None ? object : { from: Cause }) &
-      (Context extends None ? object : { context: Context })
+    readonly message: string,
+    readonly options: (Cause extends undefined ? object : { from: Cause }) &
+      (Context extends undefined ? object : { context: Context })
   ) {
-    super(innerMessage, {
+    super(message, {
       cause: "from" in options ? options.from : undefined,
     });
 
     this.cause = ("from" in options ? options.from : undefined) as Cause;
     this.context = (
-      "context" in options && isNotNone(options.context)
-        ? options.context
-        : undefined
-    ) as typeof this.context;
+      "context" in options ? options.context : undefined
+    ) as Context;
   }
 }
 
 function createStrictError<
   const Type extends string,
-  const Cause extends Error | None = None,
-  const Context = None
+  const Cause extends Error | undefined = undefined,
+  const Context = undefined
 >(
   type: Type
 ): new (
@@ -45,21 +40,26 @@ function createStrictError<
     ConstructorParameters<typeof StrictError<Type, Cause, Context>>[1]
   ]
 ) => StrictError<Type, Cause, Context> {
-  return class AnonymousStrictError extends StrictError<Type, Cause, Context> {
+  const c = class extends StrictError<Type, Cause, Context> {
     readonly name = type;
 
     constructor(
-      options: (Cause extends None ? object : { from: Cause }) &
-        (Context extends None ? object : { context: Context })
+      options: (Cause extends undefined ? object : { from: Cause }) &
+        (Context extends undefined ? object : { context: Context })
     ) {
       super(`StrictError of type ${type}`, options);
     }
   };
+  Object.defineProperty(c, "name", {
+    value: type,
+    writable: false,
+  });
+  return c;
 }
 
 function isStrictError(
   error: unknown
-): error is StrictError<string, Error | None, unknown> {
+): error is StrictError<string, Error | undefined, unknown> {
   return (
     typeof error === "object" &&
     error != null &&
@@ -68,4 +68,4 @@ function isStrictError(
   );
 }
 
-export { StrictError, createStrictError, isStrictError, None };
+export { StrictError, createStrictError, isStrictError };
