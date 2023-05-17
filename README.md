@@ -45,12 +45,12 @@ yarn add ts-strict-error
 ## Usage
 
 ```ts
-import { createError, None } from "ts-strict-error";
+import { createStrictError } from "ts-strict-error";
 
 const NetworkError = createStrictError("NetworkError");
 const NonOkStatusCode = createStrictError<
   "NonOkStatusCode",
-  None,
+  undefined,
   { code: number }
 >("NonOkStatusCode");
 
