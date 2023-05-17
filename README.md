@@ -35,10 +35,10 @@ This library is available on NPM and needs to be installed and packaged with
 your code:
 
 ```sh
-// with npm
+# with npm
 npm i -S ts-strict-error
 
-// or yarn
+# or yarn
 yarn add ts-strict-error
 ```
 
